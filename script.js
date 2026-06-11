@@ -337,52 +337,65 @@
 
   if (!form) return;
 
-  /* Initialize EmailJS */
-  emailjs.init('s3FDqCCL55ErBRX8N');
+  function setupForm() {
+    if (typeof emailjs === 'undefined') {
+      // EmailJS not ready yet, try again in 100ms
+      setTimeout(setupForm, 100);
+      return;
+    }
 
-  form.addEventListener('submit', function(e) {
-    e.preventDefault();
+    // EmailJS is now available, initialize it
+    emailjs.init('s3FDqCCL55ErBRX8N');
+    console.log('EmailJS initialized successfully');
 
-    /* Visual feedback */
-    sendBtn.textContent = 'Sending…';
-    sendBtn.disabled    = true;
-    successMsg.style.display = 'none';
-    errorMsg.style.display = 'none';
+    // Attach form submit handler
+    form.addEventListener('submit', function(e) {
+      e.preventDefault();
 
-    /* Collect form data */
-    const templateParams = {
-      name: document.getElementById('name').value,
-      email: document.getElementById('email').value,
-      subject: document.getElementById('subject').value,
-      message: document.getElementById('message').value
-    };
-
-    /* Send email */
-    emailjs.send('service_o5b2tn4', 'template_zym5ser', templateParams)
-    .then(function(response) {
-      console.log('SUCCESS:', response);
-      successMsg.style.display = 'block';
-      errorMsg.style.display = 'none';
-      form.reset();
-      sendBtn.textContent = 'Send Message ✦';
-      sendBtn.disabled = false;
-
-      setTimeout(() => {
-        successMsg.style.display = 'none';
-      }, 5000);
-    })
-    .catch(function(error) {
-      console.error('EmailJS Error:', error);
-      errorMsg.style.display = 'block';
+      /* Visual feedback */
+      sendBtn.textContent = 'Sending…';
+      sendBtn.disabled    = true;
       successMsg.style.display = 'none';
-      sendBtn.textContent = 'Send Message ✦';
-      sendBtn.disabled = false;
+      errorMsg.style.display = 'none';
 
-      setTimeout(() => {
+      /* Collect form data */
+      const templateParams = {
+        name: document.getElementById('name').value,
+        email: document.getElementById('email').value,
+        subject: document.getElementById('subject').value,
+        message: document.getElementById('message').value
+      };
+
+      /* Send email */
+      emailjs.send('service_o5b2tn4', 'template_zym5ser', templateParams)
+      .then(function(response) {
+        console.log('SUCCESS:', response);
+        successMsg.style.display = 'block';
         errorMsg.style.display = 'none';
-      }, 5000);
+        form.reset();
+        sendBtn.textContent = 'Send Message ✦';
+        sendBtn.disabled = false;
+
+        setTimeout(() => {
+          successMsg.style.display = 'none';
+        }, 5000);
+      })
+      .catch(function(error) {
+        console.error('EmailJS Error:', error);
+        errorMsg.style.display = 'block';
+        successMsg.style.display = 'none';
+        sendBtn.textContent = 'Send Message ✦';
+        sendBtn.disabled = false;
+
+        setTimeout(() => {
+          errorMsg.style.display = 'none';
+        }, 5000);
+      });
     });
-  });
+  }
+
+  // Start the setup process
+  setupForm();
 })();
 
 /* ------------------------------------------
