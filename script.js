@@ -465,8 +465,8 @@
    11. FOOTER YEAR (auto-update)
 ------------------------------------------ */
 (function updateYear() {
-  const els = document.querySelectorAll('.footer-bottom p');
-  if (els.length) {
-    els[0].innerHTML = els[0].innerHTML.replace(/\d{4}/, new Date().getFullYear());
+  const el = document.getElementById('footer-year');
+  if (el) {
+    el.textContent = new Date().getFullYear();
   }
 })();
