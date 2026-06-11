@@ -337,17 +337,13 @@
 
   if (!form) return;
 
-  /* Initialize EmailJS when available */
-  if (typeof emailjs !== 'undefined') {
-    emailjs.init('s3FDqCCL55ErBRX8N');
-  }
-
-  form.addEventListener('submit', e => {
+  function handleSubmit(e) {
     e.preventDefault();
 
     if (typeof emailjs === 'undefined') {
       console.error('EmailJS not loaded yet');
       errorMsg.style.display = 'block';
+      setTimeout(() => { errorMsg.style.display = 'none'; }, 5000);
       return;
     }
 
@@ -394,7 +390,21 @@
         errorMsg.style.display = 'none';
       }, 5000);
     });
-  });
+  }
+
+  /* Wait for EmailJS to load and initialize */
+  let initAttempts = 0;
+  const checkEmailJS = setInterval(() => {
+    if (typeof emailjs !== 'undefined') {
+      clearInterval(checkEmailJS);
+      emailjs.init('s3FDqCCL55ErBRX8N');
+      form.addEventListener('submit', handleSubmit);
+      console.log('EmailJS initialized successfully');
+    } else if (++initAttempts > 50) {
+      clearInterval(checkEmailJS);
+      console.error('EmailJS failed to load');
+    }
+  }, 100);
 })();
 
 /* ------------------------------------------
