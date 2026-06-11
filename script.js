@@ -327,9 +327,12 @@
 })();
 
 /* ------------------------------------------
-   7. CONTACT FORM (demo — no backend)
+   7. CONTACT FORM (EmailJS integration)
 ------------------------------------------ */
 (function initContactForm() {
+  /* Initialize EmailJS */
+  emailjs.init('s3FDqCCL55ErBRX8N');
+
   const form    = document.getElementById('contact-form');
   const sendBtn = document.getElementById('send-btn');
 
@@ -342,7 +345,26 @@
     sendBtn.textContent = 'Sending…';
     sendBtn.disabled    = true;
 
-    setTimeout(() => {
+    /* Collect form data */
+    const formData = {
+      service_id: 'service_o5b2tn4',
+      template_id: 'template_zym5ser',
+      user_id: 's3FDqCCL55ErBRX8N',
+      template_params: {
+        name: document.getElementById('name').value,
+        email: document.getElementById('email').value,
+        subject: document.getElementById('subject').value,
+        message: document.getElementById('message').value
+      }
+    };
+
+    /* Send email */
+    fetch('https://api.emailjs.com/api/v1.0/email/send', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(formData)
+    })
+    .then(response => {
       sendBtn.textContent    = '✓ Message Sent!';
       sendBtn.style.background = 'linear-gradient(135deg,#1a7a4a,#2dba70)';
       form.reset();
@@ -352,7 +374,18 @@
         sendBtn.disabled       = false;
         sendBtn.style.background = '';
       }, 3000);
-    }, 1400);
+    })
+    .catch(error => {
+      console.error('EmailJS Error:', error);
+      sendBtn.textContent    = '✗ Send Failed';
+      sendBtn.style.background = 'linear-gradient(135deg,#8b3a3a,#d63031)';
+      sendBtn.disabled       = false;
+
+      setTimeout(() => {
+        sendBtn.textContent    = 'Send Message ✦';
+        sendBtn.style.background = '';
+      }, 3000);
+    });
   });
 })();
 
