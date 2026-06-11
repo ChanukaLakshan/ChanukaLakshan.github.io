@@ -337,15 +337,11 @@
 
   if (!form) return;
 
-  function handleSubmit(e) {
-    e.preventDefault();
+  /* Initialize EmailJS */
+  emailjs.init('s3FDqCCL55ErBRX8N');
 
-    if (typeof emailjs === 'undefined') {
-      console.error('EmailJS not loaded yet');
-      errorMsg.style.display = 'block';
-      setTimeout(() => { errorMsg.style.display = 'none'; }, 5000);
-      return;
-    }
+  form.addEventListener('submit', function(e) {
+    e.preventDefault();
 
     /* Visual feedback */
     sendBtn.textContent = 'Sending…';
@@ -361,50 +357,32 @@
       message: document.getElementById('message').value
     };
 
-    /* Send email using EmailJS SDK */
+    /* Send email */
     emailjs.send('service_o5b2tn4', 'template_zym5ser', templateParams)
-    .then(response => {
+    .then(function(response) {
       console.log('SUCCESS:', response);
-      /* Show success message */
       successMsg.style.display = 'block';
       errorMsg.style.display = 'none';
       form.reset();
       sendBtn.textContent = 'Send Message ✦';
       sendBtn.disabled = false;
 
-      /* Hide message after 5 seconds */
       setTimeout(() => {
         successMsg.style.display = 'none';
       }, 5000);
     })
-    .catch(error => {
+    .catch(function(error) {
       console.error('EmailJS Error:', error);
-      /* Show error message */
       errorMsg.style.display = 'block';
       successMsg.style.display = 'none';
       sendBtn.textContent = 'Send Message ✦';
       sendBtn.disabled = false;
 
-      /* Hide message after 5 seconds */
       setTimeout(() => {
         errorMsg.style.display = 'none';
       }, 5000);
     });
-  }
-
-  /* Wait for EmailJS to load and initialize */
-  let initAttempts = 0;
-  const checkEmailJS = setInterval(() => {
-    if (typeof emailjs !== 'undefined') {
-      clearInterval(checkEmailJS);
-      emailjs.init('s3FDqCCL55ErBRX8N');
-      form.addEventListener('submit', handleSubmit);
-      console.log('EmailJS initialized successfully');
-    } else if (++initAttempts > 50) {
-      clearInterval(checkEmailJS);
-      console.error('EmailJS failed to load');
-    }
-  }, 100);
+  });
 })();
 
 /* ------------------------------------------
