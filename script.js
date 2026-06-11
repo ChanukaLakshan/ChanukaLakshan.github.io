@@ -330,26 +330,25 @@
    7. CONTACT FORM (EmailJS integration)
 ------------------------------------------ */
 (function initContactForm() {
+  console.log('🔵 Contact form init starting...');
+  
   const form           = document.getElementById('contact-form');
   const sendBtn        = document.getElementById('send-btn');
   const successMsg     = document.getElementById('success-message');
   const errorMsg       = document.getElementById('error-message');
 
-  if (!form) return;
+  if (!form) {
+    console.error('❌ Form not found');
+    return;
+  }
 
-  function setupForm() {
-    if (typeof emailjs === 'undefined') {
-      // EmailJS not ready yet, try again in 100ms
-      setTimeout(setupForm, 100);
-      return;
-    }
+  console.log('✅ Form elements found');
 
-    // EmailJS is now available, initialize it
-    emailjs.init('s3FDqCCL55ErBRX8N');
-    console.log('EmailJS initialized successfully');
-
-    // Attach form submit handler
+  function attachFormListener() {
+    console.log('📌 Attaching form submit listener...');
+    
     form.addEventListener('submit', function(e) {
+      console.log('🔔 Form submit event triggered!');
       e.preventDefault();
 
       /* Visual feedback */
@@ -366,10 +365,12 @@
         message: document.getElementById('message').value
       };
 
+      console.log('📤 Sending email with params:', templateParams);
+
       /* Send email */
       emailjs.send('service_o5b2tn4', 'template_zym5ser', templateParams)
       .then(function(response) {
-        console.log('SUCCESS:', response);
+        console.log('✅ SUCCESS:', response);
         successMsg.style.display = 'block';
         errorMsg.style.display = 'none';
         form.reset();
@@ -381,7 +382,7 @@
         }, 5000);
       })
       .catch(function(error) {
-        console.error('EmailJS Error:', error);
+        console.error('❌ EmailJS Error:', error);
         errorMsg.style.display = 'block';
         successMsg.style.display = 'none';
         sendBtn.textContent = 'Send Message ✦';
@@ -392,6 +393,20 @@
         }, 5000);
       });
     });
+  }
+
+  function setupForm() {
+    if (typeof emailjs === 'undefined') {
+      console.log('⏳ Waiting for EmailJS...');
+      setTimeout(setupForm, 100);
+      return;
+    }
+
+    console.log('✅ EmailJS is available, initializing...');
+    emailjs.init('s3FDqCCL55ErBRX8N');
+    console.log('✅ EmailJS initialized successfully');
+    
+    attachFormListener();
   }
 
   // Start the setup process
