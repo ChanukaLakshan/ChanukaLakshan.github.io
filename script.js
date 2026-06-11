@@ -330,61 +330,69 @@
    7. CONTACT FORM (EmailJS integration)
 ------------------------------------------ */
 (function initContactForm() {
-  /* Initialize EmailJS */
-  emailjs.init('s3FDqCCL55ErBRX8N');
-
-  const form    = document.getElementById('contact-form');
-  const sendBtn = document.getElementById('send-btn');
+  const form           = document.getElementById('contact-form');
+  const sendBtn        = document.getElementById('send-btn');
+  const successMsg     = document.getElementById('success-message');
+  const errorMsg       = document.getElementById('error-message');
 
   if (!form) return;
+
+  /* Initialize EmailJS when available */
+  if (typeof emailjs !== 'undefined') {
+    emailjs.init('s3FDqCCL55ErBRX8N');
+  }
 
   form.addEventListener('submit', e => {
     e.preventDefault();
 
+    if (typeof emailjs === 'undefined') {
+      console.error('EmailJS not loaded yet');
+      errorMsg.style.display = 'block';
+      return;
+    }
+
     /* Visual feedback */
     sendBtn.textContent = 'Sending…';
     sendBtn.disabled    = true;
+    successMsg.style.display = 'none';
+    errorMsg.style.display = 'none';
 
     /* Collect form data */
-    const formData = {
-      service_id: 'service_o5b2tn4',
-      template_id: 'template_zym5ser',
-      user_id: 's3FDqCCL55ErBRX8N',
-      template_params: {
-        name: document.getElementById('name').value,
-        email: document.getElementById('email').value,
-        subject: document.getElementById('subject').value,
-        message: document.getElementById('message').value
-      }
+    const templateParams = {
+      name: document.getElementById('name').value,
+      email: document.getElementById('email').value,
+      subject: document.getElementById('subject').value,
+      message: document.getElementById('message').value
     };
 
-    /* Send email */
-    fetch('https://api.emailjs.com/api/v1.0/email/send', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(formData)
-    })
+    /* Send email using EmailJS SDK */
+    emailjs.send('service_o5b2tn4', 'template_zym5ser', templateParams)
     .then(response => {
-      sendBtn.textContent    = '✓ Message Sent!';
-      sendBtn.style.background = 'linear-gradient(135deg,#1a7a4a,#2dba70)';
+      console.log('SUCCESS:', response);
+      /* Show success message */
+      successMsg.style.display = 'block';
+      errorMsg.style.display = 'none';
       form.reset();
+      sendBtn.textContent = 'Send Message ✦';
+      sendBtn.disabled = false;
 
+      /* Hide message after 5 seconds */
       setTimeout(() => {
-        sendBtn.textContent    = 'Send Message ✦';
-        sendBtn.disabled       = false;
-        sendBtn.style.background = '';
-      }, 3000);
+        successMsg.style.display = 'none';
+      }, 5000);
     })
     .catch(error => {
       console.error('EmailJS Error:', error);
-      sendBtn.textContent    = '✗ Send Failed';
-      sendBtn.style.background = 'linear-gradient(135deg,#8b3a3a,#d63031)';
-      sendBtn.disabled       = false;
+      /* Show error message */
+      errorMsg.style.display = 'block';
+      successMsg.style.display = 'none';
+      sendBtn.textContent = 'Send Message ✦';
+      sendBtn.disabled = false;
 
+      /* Hide message after 5 seconds */
       setTimeout(() => {
-        sendBtn.textContent    = 'Send Message ✦';
-        sendBtn.style.background = '';
-      }, 3000);
+        errorMsg.style.display = 'none';
+      }, 5000);
     });
   });
 })();
