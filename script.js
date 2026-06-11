@@ -327,7 +327,7 @@
 })();
 
 /* ------------------------------------------
-   7. CONTACT FORM (EmailJS integration)
+   7. CONTACT FORM (EmailJS REST API via fetch)
 ------------------------------------------ */
 (function initContactForm() {
   console.log('🔵 Contact form init starting...');
@@ -344,33 +344,43 @@
 
   console.log('✅ Form elements found');
 
-  function attachFormListener() {
-    console.log('📌 Attaching form submit listener...');
-    
-    form.addEventListener('submit', function(e) {
-      console.log('🔔 Form submit event triggered!');
-      e.preventDefault();
+  form.addEventListener('submit', function(e) {
+    e.preventDefault();
+    console.log('🔔 Form submit event triggered!');
 
-      /* Visual feedback */
-      sendBtn.textContent = 'Sending…';
-      sendBtn.disabled    = true;
-      successMsg.style.display = 'none';
-      errorMsg.style.display = 'none';
+    /* Visual feedback */
+    sendBtn.textContent = 'Sending…';
+    sendBtn.disabled    = true;
+    successMsg.style.display = 'none';
+    errorMsg.style.display = 'none';
 
-      /* Collect form data */
-      const templateParams = {
-        name: document.getElementById('name').value,
-        email: document.getElementById('email').value,
-        subject: document.getElementById('subject').value,
-        message: document.getElementById('message').value
-      };
+    /* Collect form data */
+    const templateParams = {
+      name: document.getElementById('name').value,
+      email: document.getElementById('email').value,
+      subject: document.getElementById('subject').value,
+      message: document.getElementById('message').value
+    };
 
-      console.log('📤 Sending email with params:', templateParams);
+    console.log('📤 Sending email with params:', templateParams);
 
-      /* Send email */
-      emailjs.send('service_o5b2tn4', 'template_zym5ser', templateParams)
-      .then(function(response) {
-        console.log('✅ SUCCESS:', response);
+    /* Send via EmailJS REST API */
+    fetch('https://api.emailjs.com/api/v1.0/email/send', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        service_id: 'service_o5b2tn4',
+        template_id: 'template_zym5ser',
+        user_id: 's3FDqCCL55ErBRX8N',
+        template_params: templateParams
+      })
+    })
+    .then(response => {
+      console.log('📍 Response status:', response.status);
+      if (response.ok) {
+        console.log('✅ SUCCESS - Email sent!');
         successMsg.style.display = 'block';
         errorMsg.style.display = 'none';
         form.reset();
@@ -380,37 +390,22 @@
         setTimeout(() => {
           successMsg.style.display = 'none';
         }, 5000);
-      })
-      .catch(function(error) {
-        console.error('❌ EmailJS Error:', error);
-        errorMsg.style.display = 'block';
-        successMsg.style.display = 'none';
-        sendBtn.textContent = 'Send Message ✦';
-        sendBtn.disabled = false;
+      } else {
+        throw new Error('Server error: ' + response.status);
+      }
+    })
+    .catch(error => {
+      console.error('❌ Error:', error);
+      errorMsg.style.display = 'block';
+      successMsg.style.display = 'none';
+      sendBtn.textContent = 'Send Message ✦';
+      sendBtn.disabled = false;
 
-        setTimeout(() => {
-          errorMsg.style.display = 'none';
-        }, 5000);
-      });
+      setTimeout(() => {
+        errorMsg.style.display = 'none';
+      }, 5000);
     });
-  }
-
-  function setupForm() {
-    if (typeof emailjs === 'undefined') {
-      console.log('⏳ Waiting for EmailJS...');
-      setTimeout(setupForm, 100);
-      return;
-    }
-
-    console.log('✅ EmailJS is available, initializing...');
-    emailjs.init('s3FDqCCL55ErBRX8N');
-    console.log('✅ EmailJS initialized successfully');
-    
-    attachFormListener();
-  }
-
-  // Start the setup process
-  setupForm();
+  });
 })();
 
 /* ------------------------------------------
