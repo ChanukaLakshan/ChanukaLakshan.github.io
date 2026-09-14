@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FiMail, FiPhone, FiLinkedin, FiGithub, FiSend, FiMapPin, FiCheck, FiCopy, FiMessageSquare } from 'react-icons/fi';
+import { FiMail, FiPhone, FiLinkedin, FiGithub, FiSend, FiMapPin, FiCheck, FiCopy, FiMessageSquare, FiAlertCircle } from 'react-icons/fi';
 import { HiOutlineSparkles } from 'react-icons/hi';
 
 const Contact = () => {
@@ -13,28 +13,59 @@ const Contact = () => {
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
   const [copiedField, setCopiedField] = useState(null);
 
-  const emailAddress = 'chanukalakshan.sl@gmail.com';
-  const phoneNumber = '+94 77 123 4567';
+  const emailAddress = 'chanulakshan111@gmail.com';
+  const phoneNumber = '+94 77 200 86 71';
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!formData.name || !formData.email || !formData.message) return;
 
     setIsSubmitting(true);
-    // Simulate sending message
-    setTimeout(() => {
-      setIsSubmitting(false);
+    setErrorMessage('');
+
+    try {
+      const response = await fetch('https://api.emailjs.com/api/v1.0/email/send', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          service_id: 'service_o5b2tn4',
+          template_id: 'template_zym5ser',
+          user_id: 's3FDqCCL55ErBRX8N',
+          template_params: {
+            name: formData.name,
+            email: formData.email,
+            subject: formData.subject || 'Portfolio Inquiry',
+            message: formData.message,
+          },
+        }),
+      });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(errorText || `Status code: ${response.status}`);
+      }
+
       setSubmitted(true);
       setFormData({ name: '', email: '', subject: '', message: '' });
-      setTimeout(() => setSubmitted(false), 6000);
-    }, 1200);
+      setTimeout(() => setSubmitted(false), 7000);
+    } catch (err) {
+      console.error('Contact form submission error:', err);
+      setErrorMessage(
+        'Unable to send message automatically. Please try again or email directly at chanukalakshan.sl@gmail.com'
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const copyToClipboard = (text, field) => {
@@ -208,6 +239,12 @@ const Contact = () => {
                   </motion.div>
                 ) : (
                   <form onSubmit={handleSubmit} className="space-y-5">
+                    {errorMessage && (
+                      <div className="p-4 rounded-xl bg-red-500/10 border border-red-500/30 flex items-start gap-3 text-red-300 text-xs">
+                        <FiAlertCircle className="text-base text-red-400 shrink-0 mt-0.5" />
+                        <div>{errorMessage}</div>
+                      </div>
+                    )}
                     <div className="grid sm:grid-cols-2 gap-5">
                       <div className="space-y-2">
                         <label className="text-xs font-mono uppercase tracking-wider text-gray-400 font-bold block">
