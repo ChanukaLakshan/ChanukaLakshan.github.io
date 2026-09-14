@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { FiGithub, FiExternalLink, FiFolder, FiCode, FiLayers, FiInfo, FiX, FiCheck } from 'react-icons/fi';
 import { HiOutlineSparkles } from 'react-icons/hi';
 import devscorePreview from '../assets/devscore-preview.png';
+import reelmatePreview from '../assets/reelmate-preview.jpg';
 import acnrPreview from '../assets/acnr-preview.jpg';
 import plantGrowthPreview from '../assets/plant-growth-preview.jpg';
 import moodMelodiesPreview from '../assets/mood-melodies-preview.jpg';
@@ -16,6 +17,7 @@ const Projects = () => {
   const filterCategories = [
     { id: 'all', name: 'All Projects' },
     { id: 'ai', name: 'AI & Computer Vision' },
+    { id: 'mobile', name: 'Mobile App' },
     { id: 'web', name: 'Web & Full Stack' },
   ];
 
@@ -38,6 +40,27 @@ const Projects = () => {
         'AI/ML microservice integration for candidate ranking and semantic evaluation',
         'Google OAuth authentication foundation and secure session management',
         'Automated repository analysis to evaluate coding depth and technical proficiency',
+      ],
+    },
+    {
+      id: 'reelmate',
+      title: 'ReelMate — Movie Watchlist & Discovery App',
+      shortDesc: 'Native Android movie companion app built with Java, TMDB API integration, and Room SQLite database with offline sync.',
+      category: 'mobile',
+      badge: 'Native Android App',
+      image: reelmatePreview,
+      tech: ['Java', 'Android SDK', 'TMDB API', 'Room DB', 'Retrofit 2', 'OkHttp', 'Glide', 'Material 3'],
+      github: 'https://github.com/ChanukaLakshan/Reel-Mate-Mobile-App',
+      demo: 'https://github.com/ChanukaLakshan/Reel-Mate-Mobile-App',
+      fullDescription:
+        'ReelMate is a comprehensive cinema-companion native Android application developed in Java. Powered by the TMDB (The Movie Database) API for live movie information and backed by a local Room SQLite database with LiveData architecture, ReelMate allows users to explore trending and popular movies, conduct real-time searches, build custom watchlists, and log detailed star-rated reviews.',
+      features: [
+        'Live TMDB API integration fetching popular, top-rated, and upcoming movies with real-time title search',
+        'Offline-first data persistence using Android Room Database with DAO architectural patterns',
+        'Custom movie list manager allowing users to create, view, edit, and organize personalized watchlists',
+        'User authentication and session management via SharedPreferences and Bearer token interceptors',
+        'Comprehensive movie details with synopses, director credits, cast info, and star ratings',
+        'Cinema-styled dark theme built with Google Material Design components and responsive XML layouts',
       ],
     },
     {
@@ -143,7 +166,8 @@ const Projects = () => {
     : projects.filter((p) => {
         if (activeFilter === 'ai') return p.category === 'ai' || p.id === 'devscore';
         if (activeFilter === 'web') return p.category === 'web' || p.id === 'devscore';
-        return true;
+        if (activeFilter === 'mobile') return p.category === 'mobile';
+        return p.category === activeFilter;
       });
 
   return (
@@ -161,7 +185,7 @@ const Projects = () => {
             Featured Projects
           </h2>
           <p className="text-gray-400 text-sm sm:text-base">
-            Explore production systems and open-source projects engineered with AI computer vision, semantic algorithms, and modern web architectures.
+            Explore production systems and open-source projects engineered with AI computer vision, native Android development, and modern web architectures.
           </p>
           <div className="w-16 h-1 bg-premium-red mx-auto rounded-full mt-4"></div>
         </div>

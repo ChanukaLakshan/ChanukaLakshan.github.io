@@ -29,7 +29,7 @@ const Skills = () => {
 
     // Backend & Data
     { name: 'Python', category: 'backend', icon: <SiPython />, color: 'text-yellow-500', level: 'Advanced', highlight: 'AI, OpenCV & Automation' },
-    { name: 'Java', category: 'backend', icon: <FaJava />, color: 'text-red-500', level: 'Proficient', highlight: 'OOP & Enterprise Design' },
+    { name: 'Java & Android', category: 'backend', icon: <FaJava />, color: 'text-red-500', level: 'Proficient', highlight: 'Android SDK & OOP' },
     { name: 'PHP', category: 'backend', icon: <SiPhp />, color: 'text-indigo-400', level: 'Proficient', highlight: 'Backend Web & CRUD' },
     { name: 'MySQL & Relational DB', category: 'backend', icon: <SiMysql />, color: 'text-blue-500', level: 'Advanced', highlight: 'Complex Queries & Schema' },
     { name: 'Firebase', category: 'backend', icon: <SiFirebase />, color: 'text-amber-500', level: 'Proficient', highlight: 'Auth & Firestore' },
