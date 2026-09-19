@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { FiGithub, FiExternalLink, FiFolder, FiCode, FiLayers, FiInfo, FiX, FiCheck } from 'react-icons/fi';
 import { HiOutlineSparkles } from 'react-icons/hi';
 import devscorePreview from '../assets/devscore-preview.png';
+import voltrangePreview from '../assets/voltrange-preview.jpg';
 import reelmatePreview from '../assets/reelmate-preview.jpg';
 import acnrPreview from '../assets/acnr-preview.jpg';
 import plantGrowthPreview from '../assets/plant-growth-preview.jpg';
@@ -40,6 +41,26 @@ const Projects = () => {
         'AI/ML microservice integration for candidate ranking and semantic evaluation',
         'Google OAuth authentication foundation and secure session management',
         'Automated repository analysis to evaluate coding depth and technical proficiency',
+      ],
+    },
+    {
+      id: 'voltrange',
+      title: 'VoltRange LK — EV Range & Charging Companion',
+      shortDesc: 'Smart EV charging station locator, dynamic range calculation, and route companion app engineered for Sri Lankan EV drivers.',
+      category: 'mobile',
+      badge: 'Flutter & FastAPI',
+      image: voltrangePreview,
+      tech: ['Flutter', 'Dart', 'FastAPI', 'Python', 'Maps & Geolocation', 'REST APIs', 'EV Routing'],
+      github: 'https://github.com/ChanukaLakshan/VoltRange-LK-Mobile-App',
+      demo: 'https://github.com/ChanukaLakshan/VoltRange-LK-Mobile-App',
+      fullDescription:
+        'VoltRange LK is a comprehensive smart mobile application and backend ecosystem engineered to empower Electric Vehicle (EV) owners in Sri Lanka. It combines a cross-platform Flutter mobile client with a fast asynchronous Python FastAPI backend to deliver interactive charging spot locators, connector compatibility details (DC Fast / AC Type 2), real-time pricing and status info, and intelligent EV range estimation.',
+      features: [
+        'Interactive EV charging station locator with detailed port specifications (120 kW DC / 22 kW AC Type 2)',
+        'Real-time charging spot availability, pricing rates, and detailed station info cards',
+        'Dynamic EV range estimation and distance tracking tailored to travel routes',
+        'Cross-platform Flutter frontend with fluid animations and clean mobile UI/UX',
+        'High-performance Python FastAPI backend delivering low-latency geospatial data and routing APIs',
       ],
     },
     {
